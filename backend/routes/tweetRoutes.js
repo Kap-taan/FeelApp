@@ -1,21 +1,22 @@
 const express = require('express');
 const { createTweet, getTweets, getTweet, updateTweet, deleteTweet } = require('../controllers/tweetController');
+const {protect} = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
 // Get all the tweets
-router.get('/', getTweets)
+router.get('/', protect, getTweets)
 
 // Get the Single tweet
-router.get('/:id', getTweet)
+router.get('/:id', protect, getTweet)
 
 // Post a new Tweet
-router.post('/', createTweet)
+router.post('/', protect, createTweet)
 
 // Delete a Tweet
-router.delete('/:id', deleteTweet)
+router.delete('/:id', protect, deleteTweet) 
 
 // Update a Tweet
-router.patch('/:id', updateTweet)
+router.patch('/:id', protect, updateTweet)
 
 module.exports = router;

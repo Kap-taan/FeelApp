@@ -14,6 +14,19 @@ const tweetSchema = new Schema({
     },
     hashtags: {
         type: Array,
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
+    userId: {
+        type: String,
+        required: true
+    },
+    userName: {
+        type: String,
+        required: true
     }
 }, {timestamps: true})
 

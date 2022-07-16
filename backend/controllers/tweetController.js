@@ -31,12 +31,16 @@ const getTweet = async (req, res) => {
 // create a new tweet
 const createTweet = async (req, res) => {
     const {paragraph, likes, hashtags} = req.body;
+    console.log(req.body.id);
     // adding new tweet to the db
     try {
         const tweet = await Tweet.create({
             paragraph,
             likes,
-            hashtags
+            hashtags,
+            user: req.user._id,
+            userId: req.user.userName,
+            userName: req.user.name
         });
         res.status(200).json(tweet);
     } catch (error) {
@@ -56,6 +60,8 @@ const deleteTweet = async (req, res) => {
     if(!tweet) {
         return res.status(400).json({message: 'No Such Tweet'});
     }
+
+    res.status(200).json({message: "Deleted Successfully"});
 
 }
 

@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 const tweetRoutes = require('./routes/tweetRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // middlewares
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use((req, res, next) => {
 
 // routes
 app.use('/api/tweets', tweetRoutes);
+app.use('/api/users', userRoutes);
 
 // Connect to the Database
 mongoose.connect(process.env.MONGO_URI)
