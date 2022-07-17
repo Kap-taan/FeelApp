@@ -82,7 +82,7 @@ const getUsers = async (req,res) => {
 
 const getSingleUser = async (req, res) => {
     const { userName } = req.params;
-    const user = await User.findOne({userName}, ['name', 'userName', 'profileDP']);
+    const user = await User.findOne({userName}, ['name', 'userName', 'profileDP', 'followers', 'following']);
     if(user) {
         return res.status(200).json(user);
     }
@@ -105,7 +105,7 @@ const addFollowing = async (req, res) => {
     })
     const followingUser = await User.findById(userId);
     const followingUser1 = await User.findByIdAndUpdate({_id: userId}, {
-        followers: [...followingUser.followers, req.user._id],
+        followers: [...followingUser.followers, req.user._id.toString()],
         notifications: [...followingUser.notifications, {message: `${currentUser.userName} starts following you`, created_at: new Date()}]
     })
 
@@ -132,6 +132,43 @@ const getFollowersDeatils = async (req, res) => {
     res.status(200).json([]);
 }
 
+const unFollowUser = async (req, res) => {
+    const { _id } = req.user;
+    const { followingId } = req.body;
+
+    if(!mongoose.Types.ObjectId.isValid(_id) || !mongoose.Types.ObjectId.isValid(followingId)) {
+        return res.status(400).json({message: 'No Such User'});
+    }
+
+    const currentUser = await User.findById(_id);
+    const temp = [...currentUser.following];
+    const index = temp.indexOf(followingId);
+    if(index > -1) {
+        temp.splice(index, 1);
+    } else {
+        
+        return res.status(400).json({error: "Something went wrong"});
+    }
+    const user1 = await User.findByIdAndUpdate({_id}, {
+        following: [...temp]
+    })
+
+    const followingUser = await User.findById(followingId);
+    const temp1 = [...followingUser.followers];
+    const index1 = temp1.indexOf(_id.toString());
+    if(index1 > -1) {
+        temp1.splice(index1, 1);
+    } else {
+        return res.status(400).json({error: "Something went wrong"});
+    }
+    const followingUser1 = await User.findByIdAndUpdate({_id: followingId}, {
+        followers: [...temp1]
+    })
+
+    res.status(200).json({message: `You Unfollowed ${followingUser.userName} successfully`});
+
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -140,5 +177,6 @@ module.exports = {
     getSingleUser,
     addFollowing,
     getFollowingDetails,
-    getFollowersDeatils
+    getFollowersDeatils,
+    unFollowUser
 }

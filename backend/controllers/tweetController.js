@@ -92,6 +92,12 @@ const updateTweet = async (req, res) => {
 
 }
 
+const getSingleUserTweets = async (req, res) => {
+    const { userName } = req.params;
+    console.log(userName);
+    const tweets = await Tweet.find({userId: userName}).sort({createdAt: -1});
+    res.status(200).json(tweets);
+}
 
 module.exports = {
     createTweet,
@@ -99,5 +105,6 @@ module.exports = {
     getTweet,
     deleteTweet,
     updateTweet,
-    getFollowingTweet
+    getFollowingTweet,
+    getSingleUserTweets
 }
