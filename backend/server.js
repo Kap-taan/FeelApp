@@ -7,22 +7,22 @@ const app = express();
 const tweetRoutes = require('./routes/tweetRoutes');
 const userRoutes = require('./routes/userRoutes');
 
-// middlewares
+
 app.use(express.json());
 app.use((req, res, next) => {
     console.log(req.path, req.method);
     next();
 })
 
-// routes
+
 app.use('/api/tweets', tweetRoutes);
 app.use('/api/users', userRoutes);
 
-// Connect to the Database
+
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
     console.log('Connected to the Database');
-    // Listen to the requests
+
     app.listen(process.env.PORT, () => {
         console.log('Listening at Port', process.env.PORT);
     })

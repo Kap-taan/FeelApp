@@ -1,18 +1,24 @@
 const Tweet = require('../models/Tweet');
 const mongoose = require('mongoose');
 
-// get all the tweets
+
 const getTweets = async (req, res) => {
-    // Getting all the tweets and sorted in decending order
+
     const tweets = await Tweet.find({}).sort({createdAt: -1});
     res.status(200).json(tweets);
 }
 
-// single tweet
+
+const getFollowingTweet = async (req, res) => {
+    console.log(req.user.following);
+    const tweets = await Tweet.find({'user': {$in: [...req.user.following, req.user._id]}}).sort({createdAt: -1});
+    res.status(200).json(tweets);
+}
+
+
 const getTweet = async (req, res) => {
     const { id } = req.params;
 
-    // Check if the id entered is valid or not
     if(!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({message: 'No Such Tweet'});
     }
@@ -28,11 +34,11 @@ const getTweet = async (req, res) => {
 }
 
 
-// create a new tweet
+
 const createTweet = async (req, res) => {
     const {paragraph, likes, hashtags} = req.body;
     console.log(req.body.id);
-    // adding new tweet to the db
+  
     try {
         const tweet = await Tweet.create({
             paragraph,
@@ -48,7 +54,7 @@ const createTweet = async (req, res) => {
     }
 }
 
-// delete a tweet
+
 const deleteTweet = async (req, res) => {
     const { id } = req.params;
     if(!mongoose.Types.ObjectId.isValid(id)) {
@@ -66,7 +72,7 @@ const deleteTweet = async (req, res) => {
 }
 
 
-// update a tweet
+
 const updateTweet = async (req, res) => {
     const { id } = req.params;
     const { paragraph, likes, hashtags } = req.body;
@@ -92,5 +98,6 @@ module.exports = {
     getTweets,
     getTweet,
     deleteTweet,
-    updateTweet
+    updateTweet,
+    getFollowingTweet
 }

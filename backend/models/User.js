@@ -26,6 +26,10 @@ const userSchema = new schema({
     },
     profileDP: {
         type: String
+    },
+    notifications: {
+        type: Array,
+        required: true
     }
 }, {timestamps: true});
 

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// Function to create a New Schema
+
 const Schema = mongoose.Schema;
 
 const tweetSchema = new Schema({
